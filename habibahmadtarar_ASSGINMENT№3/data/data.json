@@ -1,0 +1,48 @@
+{
+  "name": "Loan Applications",
+  "children": [
+    {
+      "name": "USA",
+      "children": [
+        {
+          "name": "Approved",
+          "children": [
+            { "name": "Employed", "value": 420 },
+            { "name": "Self-Employed", "value": 180 },
+            { "name": "Unemployed", "value": 75 }
+          ]
+        },
+        {
+          "name": "Rejected",
+          "children": [
+            { "name": "Employed", "value": 190 },
+            { "name": "Self-Employed", "value": 130 },
+            { "name": "Unemployed", "value": 220 }
+          ]
+        }
+      ]
+    },
+
+    {
+      "name": "Canada",
+      "children": [
+        {
+          "name": "Approved",
+          "children": [
+            { "name": "Employed", "value": 260 },
+            { "name": "Self-Employed", "value": 110 },
+            { "name": "Unemployed", "value": 50 }
+          ]
+        },
+        {
+          "name": "Rejected",
+          "children": [
+            { "name": "Employed", "value": 160 },
+            { "name": "Self-Employed", "value": 90 },
+            { "name": "Unemployed", "value": 140 }
+          ]
+        }
+      ]
+    }
+  ]
+}
