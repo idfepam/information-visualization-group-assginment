@@ -1,4 +1,4 @@
-import { state } from './state.js';
+import { state, saveState } from './state.js';
 import { normalizeValue, euclideanDistance } from './utils.js';
 
 // K-ближайших соседей для предсказания с учетом параметров займа
@@ -106,6 +106,7 @@ export function initializeLoanParameters() {
         loanTypeSelect.value = state.loanParameters.productType;
         loanTypeSelect.addEventListener('change', function() {
             state.loanParameters.productType = this.value;
+            saveState();
             updatePrediction();
         });
     }
@@ -114,6 +115,7 @@ export function initializeLoanParameters() {
         loanIntentSelect.value = state.loanParameters.loanIntent;
         loanIntentSelect.addEventListener('change', function() {
             state.loanParameters.loanIntent = this.value;
+            saveState();
             updatePrediction();
         });
     }
@@ -123,6 +125,7 @@ export function initializeLoanParameters() {
         loanAmountInput.addEventListener('input', function() {
             const value = parseFloat(this.value) || 0;
             state.loanParameters.loanAmount = value;
+            saveState();
             updatePrediction();
         });
         
@@ -130,6 +133,7 @@ export function initializeLoanParameters() {
             const value = parseFloat(this.value) || 50000;
             state.loanParameters.loanAmount = value;
             this.value = value;
+            saveState();
             updatePrediction();
         });
     }

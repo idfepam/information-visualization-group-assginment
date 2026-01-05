@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scatter Plot - Loan Approval Visualization</title>
+    <link rel="stylesheet" href="styles/shared.css">
+    <link rel="stylesheet" href="styles/bar-chart.css">
+    <script src="https://cdn.jsdelivr.net/npm/d3@7/+esm"></script>
+</head>
+<body>
+    <nav class="navigation">
+        <div class="nav-container">
+            <h1 class="nav-title">Loan Approval Visualizations</h1>
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-link">Radar Chart</a></li>
+                <li><a href="bar-chart.html" class="nav-link">Bar Chart</a></li>
+                <li><a href="scatter-plot.html" class="nav-link">Scatter Plot</a></li>
+                <li><a href="sunburst.html" class="nav-link">Heatmap</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-container">
+        <!-- Scatter Plots Section -->
+        <div class="visualization-section active" id="scatter-plots-section">
+            <div class="section-controls">
+                <div class="control-group">
+                    <div class="control-label-row">
+                        <div class="control-label">Select Chart</div>
+                        <button class="add-chart-small-btn" id="scatter-add-chart-btn" title="Add Chart">
+                            <span class="add-chart-small-icon">+</span>
+                        </button>
+                    </div>
+                    <div class="button-group" id="scatter-chart-selector">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="control-label">X-Axis</div>
+                    <div class="button-group" id="scatter-x-axis-buttons">
+                        <button class="filter-button active" data-value="credit_score">Credit Score</button>
+                        <button class="filter-button" data-value="annual_income">Annual Income</button>
+                        <button class="filter-button" data-value="loan_amount">Loan Amount</button>
+                        <button class="filter-button" data-value="interest_rate">Interest Rate</button>
+                        <button class="filter-button" data-value="debt_to_income_ratio">DTI Ratio</button>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="control-label">Y-Axis</div>
+                    <div class="button-group" id="scatter-y-axis-buttons">
+                        <button class="filter-button active" data-value="annual_income">Annual Income</button>
+                        <button class="filter-button" data-value="credit_score">Credit Score</button>
+                        <button class="filter-button" data-value="loan_amount">Loan Amount</button>
+                        <button class="filter-button" data-value="interest_rate">Interest Rate</button>
+                        <button class="filter-button" data-value="debt_to_income_ratio">DTI Ratio</button>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="control-label">Filters</div>
+                    <div class="filters-row">
+                        <div class="filter-group">
+                            <div class="filter-group-label">Product Type</div>
+                            <div class="button-group" id="scatter-filter-product-type">
+                                <button class="filter-button active" data-value="all">All</button>
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <div class="filter-group-label">Loan Intent</div>
+                            <div class="button-group" id="scatter-filter-loan-intent">
+                                <button class="filter-button active" data-value="all">All</button>
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <div class="filter-group-label">Occupation</div>
+                            <div class="button-group" id="scatter-filter-occupation">
+                                <button class="filter-button active" data-value="all">All</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="charts-grid" id="scatter-charts-grid">
+                <!-- Charts will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/scatter-plot/main.js"></script>
+</body>
+</html>

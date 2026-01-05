@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bar Chart - Loan Approval Visualization</title>
+    <link rel="stylesheet" href="styles/shared.css">
+    <link rel="stylesheet" href="styles/bar-chart.css">
+    <script src="https://cdn.jsdelivr.net/npm/d3@7/+esm"></script>
+</head>
+<body>
+    <nav class="navigation">
+        <div class="nav-container">
+            <h1 class="nav-title">Loan Approval Visualizations</h1>
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-link">Radar Chart</a></li>
+                <li><a href="bar-chart.html" class="nav-link">Bar Chart</a></li>
+                <li><a href="scatter-plot.html" class="nav-link">Scatter Plot</a></li>
+                <li><a href="sunburst.html" class="nav-link">Heatmap</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-container">
+        <!-- Bar Charts Section -->
+        <div class="visualization-section active" id="bar-charts-section">
+            <div class="section-controls">
+                <div class="control-group">
+                    <div class="control-label-row">
+                        <div class="control-label">Select Chart</div>
+                        <button class="add-chart-small-btn" id="bar-add-chart-btn" title="Add Chart">
+                            <span class="add-chart-small-icon">+</span>
+                        </button>
+                    </div>
+                    <div class="button-group" id="bar-chart-selector">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="control-label">Group By</div>
+                    <div class="button-group" id="bar-group-by-buttons">
+                        <button class="filter-button active" data-value="product_type">Product Type</button>
+                        <button class="filter-button" data-value="loan_intent">Loan Intent</button>
+                        <button class="filter-button" data-value="occupation_status">Occupation</button>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="control-label">Filters</div>
+                    <div class="filters-row">
+                        <div class="filter-group">
+                            <div class="filter-group-label">Product Type</div>
+                            <div class="button-group" id="bar-filter-product-type">
+                                <button class="filter-button active" data-value="all">All</button>
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <div class="filter-group-label">Loan Intent</div>
+                            <div class="button-group" id="bar-filter-loan-intent">
+                                <button class="filter-button active" data-value="all">All</button>
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <div class="filter-group-label">Occupation</div>
+                            <div class="button-group" id="bar-filter-occupation">
+                                <button class="filter-button active" data-value="all">All</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="charts-grid" id="bar-charts-grid">
+                <!-- Charts will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/bar-chart/main.js"></script>
+</body>
+</html>

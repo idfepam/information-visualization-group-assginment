@@ -22,3 +22,45 @@ export const state = {
     }
 };
 
+// Save state to localStorage (excluding customerData and virtualScrollState)
+export function saveState() {
+    try {
+        const stateToSave = {
+            values: state.values,
+            selectedCustomerIds: state.selectedCustomerIds,
+            showManualData: state.showManualData,
+            expandedCustomerIds: Array.from(state.expandedCustomerIds), // Convert Set to Array
+            loanParameters: state.loanParameters
+        };
+        localStorage.setItem('radarChartState', JSON.stringify(stateToSave));
+    } catch (error) {
+        console.warn('Failed to save radar chart state:', error);
+    }
+}
+
+// Load state from localStorage
+export function loadState() {
+    try {
+        const saved = localStorage.getItem('radarChartState');
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            if (parsed.values && Array.isArray(parsed.values) && parsed.values.length === 6) {
+                state.values = parsed.values;
+            }
+            if (parsed.selectedCustomerIds && Array.isArray(parsed.selectedCustomerIds)) {
+                state.selectedCustomerIds = parsed.selectedCustomerIds;
+            }
+            if (typeof parsed.showManualData === 'boolean') {
+                state.showManualData = parsed.showManualData;
+            }
+            if (parsed.expandedCustomerIds && Array.isArray(parsed.expandedCustomerIds)) {
+                state.expandedCustomerIds = new Set(parsed.expandedCustomerIds);
+            }
+            if (parsed.loanParameters) {
+                state.loanParameters = { ...state.loanParameters, ...parsed.loanParameters };
+            }
+        }
+    } catch (error) {
+        console.warn('Failed to load radar chart state:', error);
+    }
+}

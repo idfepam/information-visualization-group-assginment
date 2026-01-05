@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heatmap - Loan Approval Visualization</title>
+    <link rel="stylesheet" href="styles/shared.css">
+    <link rel="stylesheet" href="styles/heatmap.css">
+    <script src="https://cdn.jsdelivr.net/npm/d3@7/+esm"></script>
+</head>
+<body>
+    <nav class="navigation">
+        <div class="nav-container">
+            <h1 class="nav-title">Loan Approval Visualizations</h1>
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-link">Radar Chart</a></li>
+                <li><a href="bar-chart.html" class="nav-link">Bar Chart</a></li>
+                <li><a href="scatter-plot.html" class="nav-link">Scatter Plot</a></li>
+                <li><a href="sunburst.html" class="nav-link">Heatmap</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-container">
+        <div class="heatmap-container">
+            <div class="heatmap-filters">
+                <div class="filter-group">
+                    <div class="filter-label">Product Type</div>
+                    <div class="button-group" id="heatmap-filter-product-type">
+                        <button class="filter-button active" data-value="all">All</button>
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <div class="filter-label">Loan Intent</div>
+                    <div class="button-group" id="heatmap-filter-loan-intent">
+                        <button class="filter-button active" data-value="all">All</button>
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <div class="filter-label">Occupation</div>
+                    <div class="button-group" id="heatmap-filter-occupation">
+                        <button class="filter-button active" data-value="all">All</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="heatmap"></div>
+            
+            <div class="legend">
+                <span class="legend-title">Approval Rate:</span>
+                <div>
+                    <div class="legend-gradient" id="legend-gradient"></div>
+                    <div class="legend-labels">
+                        <span>0%</span>
+                        <span>25%</span>
+                        <span>50%</span>
+                        <span>75%</span>
+                        <span>100%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats" id="stats"></div>
+        </div>
+    </div>
+
+    <script type="module" src="js/heatmap/main.js"></script>
+</body>
+</html>

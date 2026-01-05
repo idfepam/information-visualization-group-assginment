@@ -1,21 +1,23 @@
 // D3 is loaded globally via CDN in HTML
 const d3 = window.d3;
-import { state } from './state.js';
+import { state, saveState } from './state.js';
 import { MAX_RECOMMENDED_CUSTOMERS, getCustomerColor } from './config.js';
 import { formatValue } from './utils.js';
 import { axes } from './config.js';
 import { updateChart, updateHandlesState } from './chart.js';
 import { updatePrediction } from './prediction.js';
+import { loadLoanData } from '../shared/data-loader.js';
 
 // Загрузка данных из CSV
 export function loadCustomerData() {
-    d3.csv('data/Loan_approval_data_2025.csv').then(function(data) {
+    return loadLoanData().then(function(data) {
         state.customerData = data;
         
         // Инициализируем виртуальный скроллинг
         populateCustomerList();
         updatePrediction();
         updateClearAllButton();
+        return data;
     }).catch(function(error) {
         console.error('Error loading CSV:', error);
         const container = d3.select('#customer-list-container');
@@ -24,6 +26,7 @@ export function loadCustomerData() {
             .style('padding', '20px')
             .style('color', '#dc2626')
             .text('Error loading customer data');
+        return [];
     });
 }
 
@@ -95,37 +98,36 @@ function updateCustomerListItem(customerId) {
                 .html(wasExpanded ? '▲' : '▼')
                 .on('click', function(event) {
                     event.stopPropagation();
-                    const expandable = wrapper.select('.customer-expandable');
-                    const isExpanded = expandable.style('display') !== 'none';
                     
-                    // Отключаем кнопку на время анимации для предотвращения множественных кликов
+                    // Check state from the Set instead of DOM for immediate response
+                    const isExpanded = state.expandedCustomerIds.has(customerId);
+                    const expandable = wrapper.select('.customer-expandable');
+                    
+                    // Отключаем кнопку на короткое время для предотвращения множественных кликов
                     expandBtn.style('pointer-events', 'none');
                     
-                    // Используем двойной requestAnimationFrame для плавной анимации
+                    if (isExpanded) {
+                        // Сворачиваем
+                        expandable.style('display', 'none');
+                        expandBtn.html('▼');
+                        state.expandedCustomerIds.delete(customerId);
+                    } else {
+                        // Разворачиваем
+                        expandable.style('display', 'block');
+                        expandBtn.html('▲');
+                        state.expandedCustomerIds.add(customerId);
+                    }
+                    saveState();
+                    
+                    // Обновляем виртуальный скролл
                     requestAnimationFrame(() => {
-                        requestAnimationFrame(() => {
-                            if (isExpanded) {
-                                // Сворачиваем
-                                expandable.style('display', 'none');
-                                expandBtn.html('▼');
-                                state.expandedCustomerIds.delete(customerId);
-                            } else {
-                                // Разворачиваем
-                                expandable.style('display', 'block');
-                                expandBtn.html('▲');
-                                state.expandedCustomerIds.add(customerId);
-                            }
-                            
-                            // Включаем кнопку обратно после небольшой задержки
-                            setTimeout(() => {
-                                expandBtn.style('pointer-events', 'all');
-                                // Обновляем виртуальный скролл после расширения (для корректной высоты)
-                                requestAnimationFrame(() => {
-                                    updateVirtualScroll();
-                                });
-                            }, 300);
-                        });
+                        updateVirtualScroll();
                     });
+                    
+                    // Включаем кнопку обратно после короткой задержки
+                    setTimeout(() => {
+                        expandBtn.style('pointer-events', 'all');
+                    }, 100);
                 });
             
             if (existingExpandable.empty()) {
@@ -295,6 +297,7 @@ export function toggleCustomer(customerId) {
 export function clearAllCustomers() {
     state.selectedCustomerIds = [];
     state.expandedCustomerIds.clear();
+    saveState();
     
     // Обновляем график
     updateChart(true);

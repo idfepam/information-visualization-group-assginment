@@ -3,11 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Radar Chart</title>
+    <title>Radar Chart - Loan Approval Visualization</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <link rel="stylesheet" href="styles/shared.css">
     <link rel="stylesheet" href="styles/radar-chart.css">
 </head>
 <body>
+    <nav class="navigation">
+        <div class="nav-container">
+            <h1 class="nav-title">Loan Approval Visualizations</h1>
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-link">Radar Chart</a></li>
+                <li><a href="bar-chart.html" class="nav-link">Bar Chart</a></li>
+                <li><a href="scatter-plot.html" class="nav-link">Scatter Plot</a></li>
+                <li><a href="sunburst.html" class="nav-link">Heatmap</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="page-container">
     <div class="container">
         <div class="customer-list">
             <div class="customer-list-header">
@@ -101,6 +114,7 @@
                 <div class="customer-tags" id="tags5"></div>
             </div>
         </div>
+    </div>
     </div>
 
     <script type="module" src="js/main.js"></script>

@@ -6,10 +6,20 @@ import { constrainAndRound } from './utils.js';
 
 // SVG elements
 let svg, g, customerPolygonsGroup, manualDataPolygon, handles, lineGenerator;
+let chartInitialized = false;
 
 // Initialize chart SVG structure
 export function initializeChart() {
-    svg = d3.select('#chart')
+    const chartContainer = d3.select('#chart');
+    if (chartContainer.empty()) {
+        console.error('Chart container #chart not found');
+        return;
+    }
+    
+    // Clear any existing SVG
+    chartContainer.selectAll('svg').remove();
+    
+    svg = chartContainer
         .append('svg')
         .attr('width', CHART_CONFIG.width)
         .attr('height', CHART_CONFIG.height);
@@ -98,6 +108,8 @@ export function initializeChart() {
         .attr('stroke-width', 3)
         .style('cursor', 'grab')
         .style('filter', 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))');
+    
+    chartInitialized = true;
 }
 
 // Get handles for drag interaction
@@ -124,6 +136,12 @@ export function getCustomerValues(customer) {
 
 // Обновление графика
 export function updateChart(animate = true) {
+    // Check if chart is initialized
+    if (!chartInitialized || !customerPolygonsGroup || !manualDataPolygon || !handles) {
+        console.warn('Chart not initialized yet, cannot update');
+        return;
+    }
+    
     // Обновляем полигоны для выбранных клиентов
     const polygons = customerPolygonsGroup.selectAll('.customer-polygon')
         .data(state.selectedCustomerIds.map((id, originalIndex) => {

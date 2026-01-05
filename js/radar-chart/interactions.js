@@ -1,7 +1,7 @@
 // D3 is loaded globally via CDN in HTML
 const d3 = window.d3;
 import { axes, angleSlice, radius } from './config.js';
-import { state } from './state.js';
+import { state, saveState } from './state.js';
 import { constrainAndRound } from './utils.js';
 import { updateChart, getHandles, updateHandlesState } from './chart.js';
 import { updatePrediction } from './prediction.js';
@@ -35,6 +35,7 @@ export function initializeInputs() {
             
             // Обновляем значение и график в реальном времени
             state.values[i] = value;
+            saveState();
             updateChart(true);
             updatePrediction();
         });
@@ -50,6 +51,7 @@ export function initializeInputs() {
             value = constrainAndRound(value, i);
             state.values[i] = value;
             this.value = value;
+            saveState();
             updateChart(true);
             updatePrediction();
         });
@@ -98,12 +100,14 @@ export function initializeDragHandlers() {
             const roundedValue = constrainAndRound(value, i);
             
             state.values[i] = roundedValue;
+            saveState();
             updateChart(false); // без анимации при перетаскивании
             updateInputs();
             updatePrediction();
         })
         .on('end', function() {
             state.isDragging = false;
+            saveState();
             d3.select(this)
                 .style('cursor', 'grab')
                 .transition()
