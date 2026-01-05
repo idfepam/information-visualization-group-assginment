@@ -6,7 +6,7 @@ import { initializeLoanParameters } from './radar-chart/prediction.js';
 import { initializeNavigation } from './shared/navigation.js';
 import { state, loadState, saveState } from './radar-chart/state.js';
 
-// Инициализация переключателя "Show My Data"
+// Initialize "Show My Data" toggle
 function initializeShowMyDataToggle() {
     const toggle = document.getElementById('show-my-data-toggle');
     if (toggle) {
@@ -14,12 +14,12 @@ function initializeShowMyDataToggle() {
         toggle.addEventListener('change', function() {
             state.showManualData = this.checked;
             saveState();
-            updateChart(true); // Обновляем только график, предсказание и таблица остаются активными
+            updateChart(true); // Update only chart, prediction and table remain active
         });
     }
 }
 
-// Инициализация - ждем загрузки DOM
+// Initialization - wait for DOM load
 function init() {
     try {
         initializeNavigation();
@@ -61,7 +61,7 @@ function init() {
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
 } else {
-    // DOM уже загружен
+    // DOM already loaded
     init();
 }
 

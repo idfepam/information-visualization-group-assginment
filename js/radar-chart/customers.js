@@ -8,12 +8,12 @@ import { updateChart, updateHandlesState } from './chart.js';
 import { updatePrediction } from './prediction.js';
 import { loadLoanData } from '../shared/data-loader.js';
 
-// Загрузка данных из CSV
+// Load customer data from CSV
 export function loadCustomerData() {
     return loadLoanData().then(function(data) {
         state.customerData = data;
         
-        // Инициализируем виртуальный скроллинг
+        // Initialize virtual scrolling
         populateCustomerList();
         updatePrediction();
         updateClearAllButton();
@@ -30,17 +30,17 @@ export function loadCustomerData() {
     });
 }
 
-// Создание expandable секции для клиента
+// Create expandable section for customer
 function createExpandableSection(wrapper, customer, originalIndex, wasExpanded) {
     const color = getCustomerColor(originalIndex);
     const isApproved = parseInt(customer.loan_status) === 1;
     
-    // Добавляем expandable контейнер
+    // Add expandable container
     const expandable = wrapper.append('div')
         .attr('class', 'customer-expandable')
         .style('display', wasExpanded ? 'block' : 'none');
     
-    // Детали займа
+    // Loan details
     const details = expandable.append('div')
         .attr('class', 'customer-loan-details')
         .style('border-left-color', color);
@@ -74,7 +74,7 @@ function createExpandableSection(wrapper, customer, originalIndex, wasExpanded) 
     return expandable;
 }
 
-// Обновление отдельного элемента списка клиентов
+// Update individual customer list item
 function updateCustomerListItem(customerId) {
     const customer = state.customerData.find(d => d.customer_id === customerId);
     if (!customer) return;
@@ -88,7 +88,7 @@ function updateCustomerListItem(customerId) {
     const existingExpandable = wrapper.select('.customer-expandable');
     
     if (isSelected) {
-        // Клиент выбран - добавляем expand button и секцию, если их еще нет
+        // Customer is selected - add expand button and section if they don't exist
         if (existingExpandBtn.empty()) {
             const originalIndex = state.selectedCustomerIds.indexOf(customerId);
             const wasExpanded = state.expandedCustomerIds.has(customerId);
@@ -103,28 +103,28 @@ function updateCustomerListItem(customerId) {
                     const isExpanded = state.expandedCustomerIds.has(customerId);
                     const expandable = wrapper.select('.customer-expandable');
                     
-                    // Отключаем кнопку на короткое время для предотвращения множественных кликов
+                    // Disable button briefly to prevent multiple clicks
                     expandBtn.style('pointer-events', 'none');
                     
                     if (isExpanded) {
-                        // Сворачиваем
+                        // Collapse
                         expandable.style('display', 'none');
                         expandBtn.html('▼');
                         state.expandedCustomerIds.delete(customerId);
                     } else {
-                        // Разворачиваем
+                        // Expand
                         expandable.style('display', 'block');
                         expandBtn.html('▲');
                         state.expandedCustomerIds.add(customerId);
                     }
                     saveState();
                     
-                    // Обновляем виртуальный скролл
+                    // Update virtual scroll
                     requestAnimationFrame(() => {
                         updateVirtualScroll();
                     });
                     
-                    // Включаем кнопку обратно после короткой задержки
+                    // Re-enable button after short delay
                     setTimeout(() => {
                         expandBtn.style('pointer-events', 'all');
                     }, 100);
@@ -135,17 +135,17 @@ function updateCustomerListItem(customerId) {
             }
         }
     } else {
-        // Клиент не выбран - удаляем expand button и секцию
+        // Customer not selected - remove expand button and section
         existingExpandBtn.remove();
         existingExpandable.remove();
     }
     
-    // Обновляем выделение кнопки
+    // Update button selection
     wrapper.select('.customer-item')
         .classed('selected', isSelected);
 }
 
-// Вычисление видимого диапазона для виртуального скроллинга
+// Calculate visible range for virtual scrolling
 function calculateVisibleRange() {
     const container = document.getElementById('customer-list-container');
     if (!container || state.customerData.length === 0) return;
@@ -154,7 +154,7 @@ function calculateVisibleRange() {
     const scrollTop = container.scrollTop;
     const buffer = state.virtualScrollState.buffer;
     
-    // Вычисляем начальный и конечный индексы
+    // Calculate start and end indices
     const startIndex = Math.max(0, Math.floor(scrollTop / state.virtualScrollState.itemHeight) - buffer);
     const endIndex = Math.min(
         state.customerData.length - 1,
@@ -166,7 +166,7 @@ function calculateVisibleRange() {
     state.virtualScrollState.scrollTop = scrollTop;
 }
 
-// Обновление виртуального скролла
+// Update virtual scroll
 export function updateVirtualScroll() {
     const container = d3.select('#customer-list-container');
     
@@ -177,27 +177,27 @@ export function updateVirtualScroll() {
     
     calculateVisibleRange();
     
-    // Получаем видимые элементы
+    // Get visible elements
     const visibleData = state.customerData.slice(
         state.virtualScrollState.visibleStart,
         state.virtualScrollState.visibleEnd + 1
     );
     
-    // Создаем виртуальную структуру, если её нет
+    // Create virtual structure if it doesn't exist
     let virtualContainer = container.select('.customer-list-virtual');
     if (virtualContainer.empty()) {
         virtualContainer = container.append('div')
             .attr('class', 'customer-list-virtual');
         
-        // Spacer для правильной высоты скроллбара
+        // Spacer for correct scrollbar height
         virtualContainer.append('div')
             .attr('class', 'customer-list-spacer');
         
-        // Контейнер для видимых элементов
+        // Container for visible elements
         virtualContainer.append('div')
             .attr('class', 'customer-list-content');
         
-        // Обработчик скролла с throttling (только если еще не добавлен)
+        // Scroll handler with throttling (only if not already added)
         if (!container.node().hasAttribute('data-scroll-handler')) {
             container.node().setAttribute('data-scroll-handler', 'true');
             let scrollTimeout;
@@ -213,15 +213,15 @@ export function updateVirtualScroll() {
     const spacer = virtualContainer.select('.customer-list-spacer');
     const content = virtualContainer.select('.customer-list-content');
     
-    // Устанавливаем высоту spacer для правильного скроллбара
+    // Set spacer height for correct scrollbar
     const totalHeight = state.customerData.length * state.virtualScrollState.itemHeight;
     spacer.style('height', totalHeight + 'px');
     
-    // Позиционируем контент
+    // Position content
     const offsetY = state.virtualScrollState.visibleStart * state.virtualScrollState.itemHeight;
     content.style('transform', `translateY(${offsetY}px)`);
     
-    // Обновляем видимые элементы
+    // Update visible elements
     const customerItems = content.selectAll('.customer-item-wrapper')
         .data(visibleData, d => d.customer_id);
     
@@ -250,12 +250,12 @@ export function updateVirtualScroll() {
     });
 }
 
-// Заполнение списка клиентов (использует виртуальный скроллинг)
+// Populate customer list (uses virtual scrolling)
 export function populateCustomerList() {
     updateVirtualScroll();
 }
 
-// Обновление предупреждения о количестве клиентов
+// Update customer count warning
 function updateCustomerWarning() {
     const warningDiv = document.getElementById('customer-warning');
     const count = state.selectedCustomerIds.length;
@@ -268,23 +268,23 @@ function updateCustomerWarning() {
     }
 }
 
-// Переключение выбора клиента (добавить/удалить)
+// Toggle customer selection (add/remove)
 export function toggleCustomer(customerId) {
     const index = state.selectedCustomerIds.indexOf(customerId);
     if (index === -1) {
-        // Добавляем клиента
+        // Add customer
         state.selectedCustomerIds.push(customerId);
     } else {
-        // Удаляем клиента
+        // Remove customer
         state.selectedCustomerIds.splice(index, 1);
-        // Удаляем из Set развернутых, если был развернут
+        // Remove from expanded set if was expanded
         state.expandedCustomerIds.delete(customerId);
     }
     
-    // Обновляем график
+    // Update chart
     updateChart(true);
     
-    // Обновляем виртуальный скролл
+    // Update virtual scroll
     updateVirtualScroll();
     
     updateHandlesState();
@@ -293,16 +293,16 @@ export function toggleCustomer(customerId) {
     updateClearAllButton();
 }
 
-// Очистка всех выбранных клиентов
+// Clear all selected customers
 export function clearAllCustomers() {
     state.selectedCustomerIds = [];
     state.expandedCustomerIds.clear();
     saveState();
     
-    // Обновляем график
+    // Update chart
     updateChart(true);
     
-    // Обновляем виртуальный скролл
+    // Update virtual scroll
     updateVirtualScroll();
     
     updateHandlesState();
@@ -311,7 +311,7 @@ export function clearAllCustomers() {
     updateClearAllButton();
 }
 
-// Обновление состояния кнопки "Clear All"
+// Update "Clear All" button state
 export function updateClearAllButton() {
     const clearAllBtn = document.getElementById('clear-all-btn');
     if (clearAllBtn) {
@@ -319,9 +319,9 @@ export function updateClearAllButton() {
     }
 }
 
-// Добавление клиента по ID из поля поиска
+// Add customer by ID from search field
 export function addCustomerById(customerId) {
-    // Нормализуем ID (может быть введен в любом регистре)
+    // Normalize ID (can be entered in any case)
     const normalizedId = customerId.toUpperCase();
     const customer = state.customerData.find(d => d.customer_id.toUpperCase() === normalizedId);
     
@@ -330,15 +330,15 @@ export function addCustomerById(customerId) {
         return;
     }
     
-    // Добавляем, если еще не добавлен
+    // Add if not already added
     if (state.selectedCustomerIds.indexOf(customer.customer_id) === -1) {
         toggleCustomer(customer.customer_id);
     }
 }
 
-// Обновление тегов с значениями клиентов
+// Update tags with customer values
 export function updateCustomerTags() {
-    // Маппинг индексов осей к индексам полей данных
+    // Map axis indices to data field indices
     const dataFieldMap = {
         0: 'credit_score',
         1: 'annual_income',
@@ -359,7 +359,7 @@ export function updateCustomerTags() {
             const fieldName = dataFieldMap[axisIndex];
             let value = parseFloat(customer[fieldName]);
             
-            // Для DTI Ratio умножаем на 100 для процентов
+            // For DTI Ratio multiply by 100 for percentage
             if (axisIndex === 5) {
                 value = value * 100;
             }
@@ -375,7 +375,7 @@ export function updateCustomerTags() {
     });
 }
 
-// Инициализация поиска клиентов
+// Initialize customer search
 export function initializeCustomerSearch() {
     const searchInput = document.getElementById('customer-search');
     const searchBtn = document.getElementById('search-btn');
@@ -401,12 +401,12 @@ export function initializeCustomerSearch() {
         });
     }
     
-    // Инициализация кнопки "Clear All"
+    // Initialize "Clear All" button
     if (clearAllBtn) {
         clearAllBtn.addEventListener('click', function() {
             clearAllCustomers();
         });
-        // Инициализируем состояние кнопки
+        // Initialize button state
         updateClearAllButton();
     }
 }

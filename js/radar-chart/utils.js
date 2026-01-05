@@ -1,12 +1,12 @@
 import { axes } from './config.js';
 
-// Нормализация данных для модели
+// Normalize data for model
 export function normalizeValue(value, min, max) {
     if (max === min) return 0;
     return (value - min) / (max - min);
 }
 
-// Вычисление евклидова расстояния между двумя точками
+// Calculate Euclidean distance between two points
 export function euclideanDistance(point1, point2) {
     let sum = 0;
     for (let i = 0; i < point1.length; i++) {
@@ -15,14 +15,14 @@ export function euclideanDistance(point1, point2) {
     return Math.sqrt(sum);
 }
 
-// Функция для применения ограничений и округления значения
+// Function to apply constraints and round value
 export function constrainAndRound(value, axisIndex) {
     const axis = axes[axisIndex];
     
-    // Применяем ограничения
+    // Apply constraints
     value = Math.max(axis.min, Math.min(axis.max, value));
     
-    // Округляем согласно типу
+    // Round according to type
     if (axisIndex === 1 || axisIndex === 2 || axisIndex === 4) { // Income, Debt, Savings
         value = Math.round(value / 1000) * 1000;
     } else if (axisIndex === 3) { // Years
@@ -34,7 +34,7 @@ export function constrainAndRound(value, axisIndex) {
     return value;
 }
 
-// Форматирование значения для отображения
+// Format value for display
 export function formatValue(value, axisIndex) {
     if (axisIndex === 1 || axisIndex === 2 || axisIndex === 4) { // Income, Debt, Savings
         return '$' + value.toLocaleString();

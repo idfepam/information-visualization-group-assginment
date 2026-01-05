@@ -1,20 +1,20 @@
 import { state, saveState } from './state.js';
 import { normalizeValue, euclideanDistance } from './utils.js';
 
-// K-ближайших соседей для предсказания с учетом параметров займа
+// K-nearest neighbors for prediction considering loan parameters
 function predictLoanApproval(inputValues, loanParams, k = 15) {
     if (!state.customerData || state.customerData.length === 0) return 0.5;
     
-    // Фильтруем клиентов по параметрам займа (тип продукта и намерение)
+    // Filter customers by loan parameters (product type and intent)
     const filteredCustomers = state.customerData.filter(customer => 
         customer.product_type === loanParams.productType &&
         customer.loan_intent === loanParams.loanIntent
     );
     
-    // Если нет подходящих клиентов, используем всех
+    // If no matching customers, use all
     const customersToUse = filteredCustomers.length > 0 ? filteredCustomers : state.customerData;
     
-    // Нормализуем входные данные
+    // Normalize input data
     const normalizedInput = [
         normalizeValue(inputValues[0], 300, 850),      // credit_score
         normalizeValue(inputValues[1], 25000, 175000),   // annual_income
@@ -25,7 +25,7 @@ function predictLoanApproval(inputValues, loanParams, k = 15) {
         normalizeValue(loanParams.loanAmount, 0, 200000)  // loan_amount
     ];
     
-    // Вычисляем расстояния до всех точек в отфильтрованном датасете
+    // Calculate distances to all points in filtered dataset
     const distances = customersToUse.map(customer => {
         const customerValues = [
             normalizeValue(parseFloat(customer.credit_score), 300, 850),
@@ -43,20 +43,20 @@ function predictLoanApproval(inputValues, loanParams, k = 15) {
         };
     });
     
-    // Сортируем по расстоянию и берем k ближайших
+    // Sort by distance and take k nearest
     distances.sort((a, b) => a.distance - b.distance);
     const kNearest = distances.slice(0, k);
     
-    // Вычисляем вероятность как долю одобренных среди k ближайших
+    // Calculate probability as proportion of approved among k nearest
     const approvedCount = kNearest.filter(d => d.status === 1).length;
     return approvedCount / k;
 }
 
-// Обновление предсказания для ручных данных
+// Update prediction for manual data
 export function updatePrediction() {
     if (!state.customerData || state.customerData.length === 0) return;
     
-    // Получаем текущие параметры займа
+    // Get current loan parameters
     const loanTypeSelect = document.getElementById('loan-type');
     const loanIntentSelect = document.getElementById('loan-intent');
     const loanAmountInput = document.getElementById('loan-amount-input');
@@ -70,19 +70,19 @@ export function updatePrediction() {
     const probability = predictLoanApproval(state.values, state.loanParameters);
     const percentage = Math.round(probability * 100);
     
-    // Обновляем значение вероятности
+    // Update probability value
     const probabilityValue = document.getElementById('probability-value');
     if (probabilityValue) {
         probabilityValue.textContent = `${percentage}%`;
     }
     
-    // Обновляем прогресс-бар
+    // Update progress bar
     const probabilityBar = document.getElementById('probability-bar');
     if (probabilityBar) {
         probabilityBar.style.width = `${percentage}%`;
     }
     
-    // Обновляем статус
+    // Update status
     const predictionStatus = document.getElementById('prediction-status');
     if (predictionStatus) {
         predictionStatus.className = 'prediction-status';
@@ -96,7 +96,7 @@ export function updatePrediction() {
     }
 }
 
-// Инициализация параметров займа
+// Initialize loan parameters
 export function initializeLoanParameters() {
     const loanTypeSelect = document.getElementById('loan-type');
     const loanIntentSelect = document.getElementById('loan-intent');

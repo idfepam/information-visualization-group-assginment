@@ -1,6 +1,6 @@
 // Shared state for radar chart
 export const state = {
-    // Начальные значения
+    // Initial values
     values: [650, 75000, 30000, 5, 15000, 40],
     isDragging: false,
     customerData: [],

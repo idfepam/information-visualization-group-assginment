@@ -27,7 +27,7 @@ export function initializeChart() {
     g = svg.append('g')
         .attr('transform', `translate(${CHART_CONFIG.width/2}, ${CHART_CONFIG.height/2})`);
 
-    // Рисуем концентрические круги для справки
+    // Draw concentric circles for reference
     for (let i = 1; i <= 5; i++) {
         g.append('circle')
             .attr('r', (radius / 5) * i)
@@ -36,7 +36,7 @@ export function initializeChart() {
             .attr('stroke-width', 1);
     }
 
-    // Рисуем внешний шестиугольник (максимальные значения)
+    // Draw outer hexagon (maximum values)
     const outerPoints = axes.map((axis, i) => {
         const angle = angleSlice * i - Math.PI / 2;
         return {
@@ -50,7 +50,7 @@ export function initializeChart() {
         .y(d => d.y)
         .curve(d3.curveLinearClosed);
 
-    // Внешний шестиугольник
+    // Outer hexagon
     g.append('path')
         .datum(outerPoints)
         .attr('d', lineGenerator)
@@ -58,7 +58,7 @@ export function initializeChart() {
         .attr('stroke', '#999')
         .attr('stroke-width', 2);
 
-    // Линии осей
+    // Axis lines
     axes.forEach((axis, i) => {
         const angle = angleSlice * i - Math.PI / 2;
         g.append('line')
@@ -70,7 +70,7 @@ export function initializeChart() {
             .attr('stroke-width', 2)
             .attr('stroke-dasharray', '5,5');
 
-        // Подписи осей
+        // Axis labels
         const labelRadius = radius + 50;
         g.append('text')
             .attr('x', labelRadius * Math.cos(angle))
@@ -83,10 +83,10 @@ export function initializeChart() {
             .text(axis.name);
     });
 
-    // Контейнер для полигонов клиентов
+    // Container for customer polygons
     customerPolygonsGroup = g.append('g').attr('class', 'customer-polygons');
 
-    // Полигон для ручных данных
+    // Polygon for manual data
     manualDataPolygon = g.append('path')
         .attr('class', 'manual-data-polygon')
         .attr('fill', '#2563eb')
@@ -96,7 +96,7 @@ export function initializeChart() {
         .attr('stroke-dasharray', '8,4')
         .attr('stroke-linejoin', 'round');
 
-    // Точки для перетаскивания
+    // Drag handles
     handles = g.selectAll('.handle')
         .data(axes)
         .enter()
@@ -122,7 +122,7 @@ export function getLineGenerator() {
     return lineGenerator;
 }
 
-// Получение данных клиента для графика
+// Get customer data for chart
 export function getCustomerValues(customer) {
     return [
         constrainAndRound(parseFloat(customer.credit_score), 0),
@@ -134,7 +134,7 @@ export function getCustomerValues(customer) {
     ];
 }
 
-// Обновление графика
+// Update chart
 export function updateChart(animate = true) {
     // Check if chart is initialized
     if (!chartInitialized || !customerPolygonsGroup || !manualDataPolygon || !handles) {
@@ -142,7 +142,7 @@ export function updateChart(animate = true) {
         return;
     }
     
-    // Обновляем полигоны для выбранных клиентов
+    // Update polygons for selected customers
     const polygons = customerPolygonsGroup.selectAll('.customer-polygon')
         .data(state.selectedCustomerIds.map((id, originalIndex) => {
             const customer = state.customerData.find(d => d.customer_id === id);
@@ -187,7 +187,7 @@ export function updateChart(animate = true) {
         }
     });
 
-    // Обновляем полигон для ручных данных
+    // Update polygon for manual data
     const manualPoints = axes.map((axis, i) => {
         const value = state.values[i];
         const normalized = (value - axis.min) / (axis.max - axis.min);
@@ -216,7 +216,7 @@ export function updateChart(animate = true) {
         manualDataPolygon.style('display', 'none');
     }
 
-    // Обновляем точки для перетаскивания
+    // Update drag handles
     if (state.showManualData) {
         if (animate && !state.isDragging) {
             handles
@@ -236,11 +236,11 @@ export function updateChart(animate = true) {
         handles.style('display', 'none');
     }
 
-    // Включаем/выключаем ручки в зависимости от режима
+    // Enable/disable handles based on mode
     updateHandlesState();
 }
 
-// Обновление состояния ручек (включить/выключить)
+// Update handle state (enable/disable)
 export function updateHandlesState() {
     const isManualMode = state.selectedCustomerIds.length === 0;
     handles

@@ -6,7 +6,7 @@ import { constrainAndRound } from './utils.js';
 import { updateChart, getHandles, updateHandlesState } from './chart.js';
 import { updatePrediction } from './prediction.js';
 
-// Обновление полей ввода
+// Update input fields
 export function updateInputs() {
     state.values.forEach((value, i) => {
         const input = document.getElementById(`input${i}`);
@@ -16,31 +16,31 @@ export function updateInputs() {
     });
 }
 
-// Инициализация полей ввода и обработчиков событий
+// Initialize input fields and event handlers
 export function initializeInputs() {
     axes.forEach((axis, i) => {
         const input = document.getElementById(`input${i}`);
         if (!input) return;
         
-        // Устанавливаем начальное значение
+        // Set initial value
         input.value = state.values[i];
         
-        // Обновление графика при вводе (без агрессивного округления)
+        // Update chart on input (without aggressive rounding)
         input.addEventListener('input', function() {
             let value = parseFloat(this.value);
             if (isNaN(value)) return;
             
-            // Применяем только ограничения min/max, но не округляем пока пользователь печатает
+            // Apply only min/max constraints, don't round while user is typing
             value = Math.max(axis.min, Math.min(axis.max, value));
             
-            // Обновляем значение и график в реальном времени
+            // Update value and chart in real-time
             state.values[i] = value;
             saveState();
             updateChart(true);
             updatePrediction();
         });
         
-        // Применяем округление и финальные ограничения когда пользователь закончил ввод
+        // Apply rounding and final constraints when user finishes input
         input.addEventListener('blur', function() {
             let value = parseFloat(this.value);
             if (isNaN(value)) {
@@ -56,16 +56,16 @@ export function initializeInputs() {
             updatePrediction();
         });
         
-        // Также применяем округление при нажатии Enter
+        // Also apply rounding on Enter key
         input.addEventListener('keydown', function(event) {
             if (event.key === 'Enter') {
-                this.blur(); // Это вызовет обработчик blur
+                this.blur(); // This will trigger the blur handler
             }
         });
     });
 }
 
-// Инициализация drag handlers для handles
+// Initialize drag handlers for handles
 export function initializeDragHandlers() {
     const handles = getHandles();
     
@@ -79,29 +79,29 @@ export function initializeDragHandlers() {
                 .attr('r', 12);
         })
         .on('drag', function(event, d) {
-            // Проверяем, можно ли перетаскивать (только если нет выбранных клиентов)
+            // Check if dragging is allowed (only if no customers are selected)
             if (state.selectedCustomerIds.length > 0) return;
             
             const i = axes.indexOf(d);
             const angle = angleSlice * i - Math.PI / 2;
             
-            // Вычисляем проекцию на ось
+            // Calculate projection onto axis
             const dotProduct = event.x * Math.cos(angle) + event.y * Math.sin(angle);
             let distance = dotProduct;
             
-            // Ограничиваем радиусом
+            // Constrain by radius
             distance = Math.max(0, Math.min(radius, distance));
             
-            // Преобразуем в значение
+            // Convert to value
             const normalized = distance / radius;
             const value = d.min + normalized * (d.max - d.min);
             
-            // Применяем ограничения и округление
+            // Apply constraints and rounding
             const roundedValue = constrainAndRound(value, i);
             
             state.values[i] = roundedValue;
             saveState();
-            updateChart(false); // без анимации при перетаскивании
+            updateChart(false); // No animation while dragging
             updateInputs();
             updatePrediction();
         })
