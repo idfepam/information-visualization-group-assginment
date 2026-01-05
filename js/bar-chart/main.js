@@ -96,9 +96,9 @@ function initializeAllFilters() {
             renderSingleChart(state.selectedBarChart);
         }
     });
-    setupFilterGroup('bar-filter-product-type', 'bar', 'productType');
-    setupFilterGroup('bar-filter-loan-intent', 'bar', 'loanIntent');
-    setupFilterGroup('bar-filter-occupation', 'bar', 'occupationStatus');
+    setupFilterGroup('bar-filter-product-type', 'productType');
+    setupFilterGroup('bar-filter-loan-intent', 'loanIntent');
+    setupFilterGroup('bar-filter-occupation', 'occupationStatus');
 
     // Chart selectors
     updateChartSelectors();
