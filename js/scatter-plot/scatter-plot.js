@@ -115,7 +115,7 @@ export function renderScatterPlot(containerId, chartConfig, data) {
         .text(getAxisLabel(chartConfig.yAxis));
 
     // Sample data if too many points for performance
-    const MAX_POINTS = 10000; // Render max 5000 points for performance
+    const MAX_POINTS = 5000; // Render max 5000 points for performance
     let displayData = plotData;
     if (plotData.length > MAX_POINTS) {
         // Sample data while preserving distribution
